@@ -13,14 +13,13 @@ using System.Net.Http;
 using RestSharp;
 using System.Net.Http.Headers;
 using Newtonsoft.Json;
-using Timer = System.Threading.Timer;
+
 
 namespace MyScreenPrint
 {
     public partial class Form1 : Form
     {
-        ////构建 Timer
-        //static Timer timer = new Timer(TimerCallback, null, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
+        System.Timers.Timer timer = new System.Timers.Timer();
         // 截图窗口
         Cutter cutter = null;
 
@@ -240,6 +239,8 @@ namespace MyScreenPrint
                 return result.Content.ReadAsStringAsync().Result;
             }
         }
+
+
 
 
     }
