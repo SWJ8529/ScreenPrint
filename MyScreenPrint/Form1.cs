@@ -119,27 +119,13 @@ namespace MyScreenPrint
                     Graphics g = Graphics.FromImage(bmp);
                     g.DrawImage(my, new Rectangle(0, 0, width, height), new Rectangle(rectX, rectY, width, height), GraphicsUnit.Pixel);
 
-                    bmp.Save(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) +"\\"+DateTime.Now.ToFileTime().ToString()+".jpg");
+                    //bmp.Save(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) +"\\"+DateTime.Now.ToFileTime().ToString()+".jpg");
                     MemoryStream ms = new MemoryStream();
                     bmp.Save(ms, ImageFormat.Png);
-
-                    //using (var client = new HttpClient())
-                    //using (var content = new MultipartFormDataContent())
-                    //{
-                    //    client.BaseAddress = new Uri("http://118.25.1.155:9527/ocr");
-                    //    var fileContent1 = new ByteArrayContent(File.ReadAllBytes(@"D:/8cb857379572edf39ea92e5d574acb9.png"));
-                    //    fileContent1.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
-                    //    {
-                    //        Name = "\"file\"",
-                    //        FileName = "\"8cb857379572edf39ea92e5d574acb9.png\""
-                    //    };
-                    //    fileContent1.Headers.ContentType = new MediaTypeHeaderValue("image/png");
-                    //    //content.Headers.Add("Content-Tpye","image/png");
-                    //    content.Add(fileContent1);
-                    //    //content.Add(dataContent);
-                    //    var result = client.PostAsync("", content).Result;
-                    //    string str = result.Content.ReadAsStringAsync().Result;
-                    //}
+                    byte[] picdata = ms.GetBuffer();//StreamToBytes(ms);
+                    BytesToImage(picdata);
+                    textBox2.Text += PICRequest(picdata, DateTime.Now.ToFileTime().ToString())+"\r\n";
+                    ms.Close();
                 }
             }
             else {
@@ -176,36 +162,91 @@ namespace MyScreenPrint
             MessageBox.Show("已清空！");
         }
 
-        public static byte[] AuthGetFileData(string fileUrl)
+        public byte[] StreamToBytes(Stream stream)
         {
-            FileStream fs = new FileStream(fileUrl, FileMode.Open, FileAccess.Read);
-            byte[] buffur = new byte[fs.Length];
-
-            fs.Read(buffur, 0, buffur.Length);
-            fs.Close();
-            return buffur;
+            byte[] bytes = new byte[stream.Length];
+            stream.Read(bytes, 0, bytes.Length);
+            // 设置当前流的位置为流的开始
+            stream.Seek(0, SeekOrigin.Begin);
+            return bytes;
         }
-        private void sendFile_Click(object sender, EventArgs e)
+
+        /// <summary>
+        /// Convert Byte[] to Image
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <returns></returns>
+        public static Image BytesToImage(byte[] buffer)
         {
+            MemoryStream ms = new MemoryStream(buffer);
+            Image image = System.Drawing.Image.FromStream(ms);
+            return image;
+        }
+
+        //private void sendFile_Click(object sender, EventArgs e)
+        //{
+        //    using (var client = new HttpClient())
+        //    using (var content = new MultipartFormDataContent())
+        //    {
+        //        client.BaseAddress = new Uri("http://118.25.1.155:9527/ocr");
+        //        var filecontent1 = new ByteArrayContent(File.ReadAllBytes(@"d:/8cb857379572edf39ea92e5d574acb9.png"));
+        //        filecontent1.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
+        //        {
+        //            Name = "\"file\"",
+        //            FileName = "\"8cb857379572edf39ea92e5d574acb9.png\""
+        //        };
+        //        filecontent1.Headers.ContentType = new MediaTypeHeaderValue("image/png");
+        //        //content.headers.add("content-tpye","image/png");
+        //        content.Add(filecontent1);
+        //        //content.add(datacontent);
+        //        var result = client.PostAsync("", content).Result;
+        //        textBox2.Text = result.Content.ReadAsStringAsync().Result;
+        //    }
+        //}
+
+        /// <summary>
+        /// 图片识别请求
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="filename"></param>
+        /// <returns></returns>
+        private string PICRequest(byte[] data,string filename) {
             using (var client = new HttpClient())
             using (var content = new MultipartFormDataContent())
             {
                 client.BaseAddress = new Uri("http://118.25.1.155:9527/ocr");
-                var filecontent1 = new ByteArrayContent(File.ReadAllBytes(@"d:/8cb857379572edf39ea92e5d574acb9.png"));
+                var filecontent1 = new ByteArrayContent(data);
                 filecontent1.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
                 {
                     Name = "\"file\"",
-                    FileName = "\"8cb857379572edf39ea92e5d574acb9.png\""
+                    FileName = filename+".png"
                 };
                 filecontent1.Headers.ContentType = new MediaTypeHeaderValue("image/png");
                 //content.headers.add("content-tpye","image/png");
                 content.Add(filecontent1);
                 //content.add(datacontent);
                 var result = client.PostAsync("", content).Result;
-                textBox2.Text = result.Content.ReadAsStringAsync().Result;
+                return result.Content.ReadAsStringAsync().Result;
             }
         }
 
 
     }
+
+    public class PICResponse
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        public string msg { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public int code { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string data { get; set; }
+    }
+
 }
