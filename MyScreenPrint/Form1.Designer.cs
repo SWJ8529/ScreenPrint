@@ -129,6 +129,9 @@
             // 
             // label3
             // 
+            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(3, 349);
             this.label3.Name = "label3";
@@ -149,6 +152,9 @@
             // 
             // label2
             // 
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(3, 17);
             this.label2.Name = "label2";
@@ -175,7 +181,7 @@
             this.Controls.Add(this.picturePanel);
             this.Controls.Add(this.operationPanel);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "图片数字识别工具";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.operationPanel.ResumeLayout(false);
             this.operationPanel.PerformLayout();

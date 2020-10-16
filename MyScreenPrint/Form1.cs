@@ -12,11 +12,15 @@ using System.Drawing.Imaging;
 using System.Net.Http;
 using RestSharp;
 using System.Net.Http.Headers;
+using Newtonsoft.Json;
+using Timer = System.Threading.Timer;
 
 namespace MyScreenPrint
 {
     public partial class Form1 : Form
     {
+        ////构建 Timer
+        //static Timer timer = new Timer(TimerCallback, null, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
         // 截图窗口
         Cutter cutter = null;
 
@@ -77,7 +81,11 @@ namespace MyScreenPrint
 
         private void button2_Click(object sender, EventArgs e)
         {
+            Hide();
+            Thread.Sleep(200);
             SaveImg();
+            Show();
+            MessageBox.Show("识别成功！");
         }
 
 
@@ -119,12 +127,15 @@ namespace MyScreenPrint
                     Graphics g = Graphics.FromImage(bmp);
                     g.DrawImage(my, new Rectangle(0, 0, width, height), new Rectangle(rectX, rectY, width, height), GraphicsUnit.Pixel);
 
-                    //bmp.Save(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) +"\\"+DateTime.Now.ToFileTime().ToString()+".jpg");
+                    bmp.Save(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) +"\\"+DateTime.Now.ToFileTime().ToString()+".png");
                     MemoryStream ms = new MemoryStream();
                     bmp.Save(ms, ImageFormat.Png);
                     byte[] picdata = ms.GetBuffer();//StreamToBytes(ms);
-                    BytesToImage(picdata);
-                    textBox2.Text += PICRequest(picdata, DateTime.Now.ToFileTime().ToString())+"\r\n";
+                    //BytesToImage(picdata);
+                    string response = PICRequest(picdata, DateTime.Now.ToFileTime().ToString());
+                    PICResponse pir = JsonConvert.DeserializeObject<PICResponse>(response);
+                    textBox2.Text += //string.IsNullOrEmpty(pir.data) ?"该坐标无法识别出数字："+ line+"   ": 
+                        response + "\r\n";
                     ms.Close();
                 }
             }
