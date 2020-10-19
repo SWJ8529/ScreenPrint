@@ -4,22 +4,19 @@ using System.Windows.Forms;
 using System.Threading;
 using System.Runtime.InteropServices;
 using System.IO;
-using System.Collections.Specialized;
-using System.Collections.Generic;
-using System.Text;
-using System.Net;
 using System.Drawing.Imaging;
 using System.Net.Http;
-using RestSharp;
 using System.Net.Http.Headers;
 using Newtonsoft.Json;
+using System.Configuration;
+using System.Diagnostics;
 
-
-namespace MyScreenPrint
+namespace ScreenPrint
 {
     public partial class Form1 : Form
     {
-        System.Timers.Timer timer = new System.Timers.Timer();
+        static String Interval;//定时时间
+        System.Timers.Timer t= new System.Timers.Timer();
         // 截图窗口
         Cutter cutter = null;
 
@@ -80,9 +77,29 @@ namespace MyScreenPrint
 
         private void button2_Click(object sender, EventArgs e)
         {
+            string path = "";
+
+            Process[] ps = Process.GetProcessesByName("QQ");
+            foreach (Process p in ps)
+            {
+                path = p.MainModule.FileName.ToString();
+
+            }
+            MessageBox.Show(path);
+            return;
+            DialogResult dr= MessageBox.Show("这是测试按钮！点击后会根据坐标截取指定区域的图片，文件将生成在桌面上。","提示",MessageBoxButtons.YesNo);
+
             Hide();
             Thread.Sleep(200);
-            SaveImg();
+            if (dr == DialogResult.Yes)
+            {
+                SaveImg(true);
+            }
+            else
+            {
+                SaveImg(false);
+            }
+
             Show();
             MessageBox.Show("识别成功！");
         }
@@ -98,7 +115,7 @@ namespace MyScreenPrint
         public static extern IntPtr CreateDC(string lpszDriver, string lpszDevice, string lpszoutput, IntPtr lpdate);
         [DllImport("gdi32.dll")]
         public static extern BootMode BitBlt(IntPtr hdcDest, int x, int y, int widht, int hight, IntPtr hdcsrc, int xsrc, int ysrc, System.Int32 dw);
-        public void SaveImg()
+        public void SaveImg(Boolean flag=false)
         {
             IntPtr dc1 = CreateDC("display", null, null, (IntPtr)null);
             Graphics g1 = Graphics.FromHdc(dc1);
@@ -125,8 +142,10 @@ namespace MyScreenPrint
                     Bitmap bmp = new Bitmap(width, height);
                     Graphics g = Graphics.FromImage(bmp);
                     g.DrawImage(my, new Rectangle(0, 0, width, height), new Rectangle(rectX, rectY, width, height), GraphicsUnit.Pixel);
-
-                    bmp.Save(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) +"\\"+DateTime.Now.ToFileTime().ToString()+".png");
+                    if (flag)
+                    {
+                        bmp.Save(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\" + DateTime.Now.ToFileTime().ToString() + ".png");
+                    }                    
                     MemoryStream ms = new MemoryStream();
                     bmp.Save(ms, ImageFormat.Png);
                     byte[] picdata = ms.GetBuffer();//StreamToBytes(ms);
@@ -134,9 +153,10 @@ namespace MyScreenPrint
                     string response = PICRequest(picdata, DateTime.Now.ToFileTime().ToString());
                     PICResponse pir = JsonConvert.DeserializeObject<PICResponse>(response);
                     textBox2.Text += //string.IsNullOrEmpty(pir.data) ?"该坐标无法识别出数字："+ line+"   ": 
-                        response + "\r\n";
+                        DateTime.Now.ToString()+" : "+response + "\r\n";
                     ms.Close();
                 }
+                textBox2.Text += "\r\n";
             }
             else {
                 MessageBox.Show("请设置坐标！","提示");
@@ -148,6 +168,7 @@ namespace MyScreenPrint
         private void Form1_Load(object sender, EventArgs e)
         {
             label1.Text = "设置坐标个数：" + Program.point.Count;
+            Interval = ConfigurationManager.AppSettings["Time"];
             if (Program.point.Count > 0)
             {
                 foreach (string line in Program.point)
@@ -192,28 +213,6 @@ namespace MyScreenPrint
             Image image = System.Drawing.Image.FromStream(ms);
             return image;
         }
-
-        //private void sendFile_Click(object sender, EventArgs e)
-        //{
-        //    using (var client = new HttpClient())
-        //    using (var content = new MultipartFormDataContent())
-        //    {
-        //        client.BaseAddress = new Uri("http://118.25.1.155:9527/ocr");
-        //        var filecontent1 = new ByteArrayContent(File.ReadAllBytes(@"d:/8cb857379572edf39ea92e5d574acb9.png"));
-        //        filecontent1.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
-        //        {
-        //            Name = "\"file\"",
-        //            FileName = "\"8cb857379572edf39ea92e5d574acb9.png\""
-        //        };
-        //        filecontent1.Headers.ContentType = new MediaTypeHeaderValue("image/png");
-        //        //content.headers.add("content-tpye","image/png");
-        //        content.Add(filecontent1);
-        //        //content.add(datacontent);
-        //        var result = client.PostAsync("", content).Result;
-        //        textBox2.Text = result.Content.ReadAsStringAsync().Result;
-        //    }
-        //}
-
         /// <summary>
         /// 图片识别请求
         /// </summary>
@@ -240,9 +239,10 @@ namespace MyScreenPrint
             }
         }
 
-
-
-
+        private void cleanlog_Click(object sender, EventArgs e)
+        {
+            textBox2.Text = "";
+        }
     }
 
     public class PICResponse

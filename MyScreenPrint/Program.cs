@@ -4,7 +4,7 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Windows.Forms;
 using Newtonsoft.Json;
-namespace MyScreenPrint
+namespace ScreenPrint
 {
     static class Program
     {

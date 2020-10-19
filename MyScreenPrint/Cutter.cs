@@ -5,7 +5,7 @@ using System.Drawing;
 using System.IO;
 using Newtonsoft.Json;
 
-namespace MyScreenPrint
+namespace ScreenPrint
 {
     class Cutter : Form
     {

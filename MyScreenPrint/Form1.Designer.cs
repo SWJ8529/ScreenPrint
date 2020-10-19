@@ -1,4 +1,4 @@
-﻿namespace MyScreenPrint
+﻿namespace ScreenPrint
 {
     partial class Form1
     {
@@ -31,16 +31,17 @@
             this.components = new System.ComponentModel.Container();
             this.operationPanel = new System.Windows.Forms.Panel();
             this.Clean_Point = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
             this.printScrBtn = new System.Windows.Forms.Button();
             this.splitter_1 = new System.Windows.Forms.Label();
             this.picturePanel = new System.Windows.Forms.Panel();
+            this.cleanlog = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
+            this.label1 = new System.Windows.Forms.Label();
             this.operationPanel.SuspendLayout();
             this.picturePanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).BeginInit();
@@ -58,9 +59,9 @@
             this.operationPanel.Controls.Add(this.printScrBtn);
             this.operationPanel.Controls.Add(this.splitter_1);
             this.operationPanel.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.operationPanel.Location = new System.Drawing.Point(1087, 12);
+            this.operationPanel.Location = new System.Drawing.Point(1075, 12);
             this.operationPanel.Name = "operationPanel";
-            this.operationPanel.Size = new System.Drawing.Size(109, 635);
+            this.operationPanel.Size = new System.Drawing.Size(113, 635);
             this.operationPanel.TabIndex = 1;
             // 
             // Clean_Point
@@ -72,15 +73,6 @@
             this.Clean_Point.Text = "清空坐标";
             this.Clean_Point.UseVisualStyleBackColor = true;
             this.Clean_Point.Click += new System.EventHandler(this.Clean_Point_Click);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 232);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(41, 12);
-            this.label1.TabIndex = 5;
-            this.label1.Text = "label1";
             // 
             // button2
             // 
@@ -118,22 +110,30 @@
             this.picturePanel.AutoScroll = true;
             this.picturePanel.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.picturePanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.picturePanel.Controls.Add(this.cleanlog);
             this.picturePanel.Controls.Add(this.label3);
             this.picturePanel.Controls.Add(this.textBox2);
             this.picturePanel.Controls.Add(this.label2);
             this.picturePanel.Controls.Add(this.textBox1);
             this.picturePanel.Location = new System.Drawing.Point(13, 12);
             this.picturePanel.Name = "picturePanel";
-            this.picturePanel.Size = new System.Drawing.Size(1068, 635);
+            this.picturePanel.Size = new System.Drawing.Size(1056, 635);
             this.picturePanel.TabIndex = 2;
+            // 
+            // cleanlog
+            // 
+            this.cleanlog.Location = new System.Drawing.Point(5, 235);
+            this.cleanlog.Name = "cleanlog";
+            this.cleanlog.Size = new System.Drawing.Size(75, 23);
+            this.cleanlog.TabIndex = 10;
+            this.cleanlog.Text = "清空日志";
+            this.cleanlog.UseVisualStyleBackColor = true;
+            this.cleanlog.Click += new System.EventHandler(this.cleanlog_Click);
             // 
             // label3
             // 
-            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(3, 349);
+            this.label3.Location = new System.Drawing.Point(3, 261);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(59, 12);
             this.label3.TabIndex = 3;
@@ -144,17 +144,17 @@
             this.textBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox2.Location = new System.Drawing.Point(5, 364);
+            this.textBox2.Location = new System.Drawing.Point(3, 276);
             this.textBox2.Multiline = true;
             this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(1045, 266);
+            this.textBox2.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.textBox2.Size = new System.Drawing.Size(1035, 354);
             this.textBox2.TabIndex = 2;
             // 
             // label2
             // 
-            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(3, 17);
             this.label2.Name = "label2";
@@ -164,20 +164,29 @@
             // 
             // textBox1
             // 
-            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBox1.Location = new System.Drawing.Point(3, 32);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(1045, 266);
+            this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.textBox1.Size = new System.Drawing.Size(1033, 184);
             this.textBox1.TabIndex = 0;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(3, 167);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(41, 12);
+            this.label1.TabIndex = 5;
+            this.label1.Text = "label1";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1208, 659);
+            this.ClientSize = new System.Drawing.Size(1193, 659);
             this.Controls.Add(this.picturePanel);
             this.Controls.Add(this.operationPanel);
             this.Name = "Form1";
@@ -199,12 +208,13 @@
         private System.Windows.Forms.BindingSource bindingSource1;
         private System.Windows.Forms.Button printScrBtn;
         private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.Button Clean_Point;
+        private System.Windows.Forms.Button cleanlog;
+        private System.Windows.Forms.Label label1;
     }
 }
 
