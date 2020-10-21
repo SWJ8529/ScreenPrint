@@ -1,0 +1,12 @@
+E:\C#\Print\Print\bin\Debug\Print.pdb
+E:\C#\Print\Print\bin\Debug\Newtonsoft.Json.dll
+E:\C#\Print\Print\bin\Debug\Newtonsoft.Json.xml
+E:\C#\Print\Print\obj\Debug\Print.csproj.CoreCompileInputs.cache
+E:\C#\Print\Print\obj\Debug\Print.csproj.CopyComplete
+E:\C#\Print\Print\obj\Debug\Print.pdb
+E:\C#\Print\Print\obj\Debug\Print.csprojAssemblyReference.cache
+E:\C#\Print\Print\bin\Debug\图片识别插件.pdb
+E:\C#\Print\Print\bin\Debug\图片识别插件.dll.config
+E:\C#\Print\Print\bin\Debug\Print.exe
+E:\C#\Print\Print\obj\Debug\Print.exe
+E:\C#\Print\Print\bin\Debug\图片识别插件.dll
