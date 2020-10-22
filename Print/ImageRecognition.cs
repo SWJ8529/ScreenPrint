@@ -21,38 +21,26 @@ namespace Print
         private static string path = "";
         string response = string.Empty;
 
-        private string getConfig(string path)
-        {
-            try
-            {
-                ExeConfigurationFileMap map = new ExeConfigurationFileMap();
-                map.ExeConfigFilename = path + @"\图片识别插件.exe.config"; ;
-                Configuration config = ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None);
-                //Configuration config = ConfigurationManager.OpenExeConfiguration(path + @"\图片识别插件.exe");
-                //string connstr = config.ConnectionStrings.ConnectionStrings["Time"].ConnectionString;             
-                return config.AppSettings.Settings["URL"].Value;
-            }
-            catch (Exception ex)
-            {
-                return "{\"msg\":\"读取配置文件失败!\",\"code\":500,\"data\":\"\"}";
-            }
-        }
-
         public void Recognition() 
         {
             try
             {                
-                Process[] ps = Process.GetProcessesByName("图片识别插件");
-                foreach (Process p in ps)
-                {
-                    path = p.MainModule.FileName.ToString();
-                }
-                path= path.Substring(0,path.LastIndexOf('\\'));
+                //Process[] ps = Process.GetProcessesByName("图片识别插件");
+                //foreach (Process p in ps)
+                //{
+                //    path = p.MainModule.FileName.ToString();
+                //}
+                //path= path.Substring(0,path.LastIndexOf('\\'));
+                path= Environment.CurrentDirectory.Substring(0, Environment.CurrentDirectory.IndexOf('\\')) + @"/Point.txt";
 
                 #region 读取文件坐标
-                var lines = File.ReadAllLines(path+@"\Point.txt");
+                if (!File.Exists(path))//判断文件是否存在
+                {
+                    File.Create(path).Close();
+                }
 
-                string PointJson = "{\"point\":[";
+                var lines = File.ReadAllLines(path);
+                string PointJson = string.Empty;
 
                 foreach (var line in lines)
                 {
@@ -61,13 +49,13 @@ namespace Print
                         PointJson += line;
                     }
                 }
-
-                PointJson += "]}";
                 ReadPoint rp = JsonConvert.DeserializeObject<ReadPoint>(PointJson);
                 point = rp.point;
-            }catch(Exception ex)
+                _URL = rp.url;
+            }
+            catch(Exception ex)
             {
-                response = "{\"msg\":\"读取坐标失败!\",\"code\":500,\"data\":\"\"}";
+                response = "{\"msg\":\"读取配置文件失败!\",\"code\":500,\"data\":\"\"}";
             }
             #endregion
         }
@@ -91,7 +79,6 @@ namespace Print
         {
             
             Recognition();
-            _URL = getConfig(path);
             if (!string.IsNullOrEmpty(response))
             {
                 return response;
@@ -208,5 +195,6 @@ namespace Print
         /// 
         /// </summary>
         public List<string> point { get; set; }
+        public string url { get; set; }
     }
 }
