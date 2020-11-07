@@ -6,3 +6,11 @@ E:\C#\Print\Print\obj\Debug\Print.csproj.CopyComplete
 E:\C#\Print\Print\obj\Debug\Print.pdb
 E:\C#\Print\Print\bin\Debug\Print.dll
 E:\C#\Print\Print\obj\Debug\Print.dll
+E:\C#\ScreenPrint\Print\bin\Debug\Print.pdb
+E:\C#\ScreenPrint\Print\bin\Debug\Newtonsoft.Json.dll
+E:\C#\ScreenPrint\Print\bin\Debug\Newtonsoft.Json.xml
+E:\C#\ScreenPrint\Print\obj\Debug\Print.csproj.CoreCompileInputs.cache
+E:\C#\ScreenPrint\Print\obj\Debug\Print.csproj.CopyComplete
+E:\C#\ScreenPrint\Print\obj\Debug\Print.pdb
+E:\C#\ScreenPrint\Print\bin\Debug\Print.dll
+E:\C#\ScreenPrint\Print\obj\Debug\Print.dll

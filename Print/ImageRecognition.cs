@@ -79,10 +79,7 @@ namespace Print
         {
             
             Recognition();
-            if (!string.IsNullOrEmpty(response))
-            {
-                return response;
-            }
+            string ret = response;
             IntPtr dc1 = CreateDC("display", null, null, (IntPtr)null);
             Graphics g1 = Graphics.FromHdc(dc1);
             Bitmap my = new Bitmap(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height, g1);
@@ -93,12 +90,14 @@ namespace Print
             g1.ReleaseHdc(dc3);
             g2.ReleaseHdc(dc2);
 
+            int i = 0;
 
             #region 获取坐标
             if (point.Count > 0)
             {
                 foreach (string line in point)
                 {
+                    i++;
                     rectX = Convert.ToInt32(line.Split(',')[0]);
                     rectY = Convert.ToInt32(line.Split(',')[1]);
                     width = Convert.ToInt32(line.Split(',')[2]);
@@ -108,25 +107,55 @@ namespace Print
                     Bitmap bmp = new Bitmap(width, height);
                     Graphics g = Graphics.FromImage(bmp);
                     g.DrawImage(my, new Rectangle(0, 0, width, height), new Rectangle(rectX, rectY, width, height), GraphicsUnit.Pixel);
+
                     if (Flag)
                     {
                         bmp.Save(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\" + DateTime.Now.ToFileTime().ToString() + ".png");
                     }
+
+
                     MemoryStream ms = new MemoryStream();
                     bmp.Save(ms, ImageFormat.Png);
                     byte[] picdata = ms.GetBuffer();//StreamToBytes(ms);
-                    //byte[] test = new byte[10];
                     //BytesToImage(picdata);
-                    response = CreatePostData(_URL, DateTime.Now.ToFileTime().ToString(), picdata);
+                    string response = CreatePostData(_URL, DateTime.Now.ToFileTime().ToString(), picdata);
+                    PICResponse pir = JsonConvert.DeserializeObject<PICResponse>(response);
                     ms.Close();
-                    
+                    g.Dispose();
+                    bmp.Dispose();
+                    try
+                    {
+                        if (!string.IsNullOrEmpty(pir.data) && decimal.Parse(pir.data) != 0)//判断是否为空
+                        {
+
+                            //尝试将内容转为数字
+                            //if (decimal.Parse(pir.data) == 0) { continue; }
+                            ret = JsonConvert.SerializeObject(pir);
+                            break;//跳出循环
+                        }
+                        if (i == point.Count && string.IsNullOrEmpty(pir.data))//如果是最后一个坐标并且还没数据
+                        {
+                            ret = "{\"msg\":\"没获取到坐标中的数据!\",\"code\":500,\"data\":\"\"}";
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        continue;//继续循环
+                    }
                 }
             }
             else
             {
-                response="{\"msg\":\"没有坐标请使用工具设置坐标!\",\"code\":500,\"data\":\"\"}";
+                ret = "{\"msg\":\"读取坐标失败!\",\"code\":500,\"data\":\"\"}";
             }
-            return response;
+            if (string.IsNullOrEmpty(ret))
+            {
+                ret = "{\"msg\":\"未读取到数据!\",\"code\":500,\"data\":\"\"}";
+            }
+            g1.Dispose();
+            g2.Dispose();
+            my.Dispose();
+            return ret;
             #endregion
         }
 
@@ -196,5 +225,21 @@ namespace Print
         /// </summary>
         public List<string> point { get; set; }
         public string url { get; set; }
+    }
+
+    public class PICResponse
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        public string msg { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public int code { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string data { get; set; }
     }
 }

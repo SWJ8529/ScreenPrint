@@ -10,7 +10,7 @@ namespace Print
         static void Main(string[] args)
         {
             ImageRecognition image = new ImageRecognition();
-            Console.WriteLine(); 
+            Console.WriteLine(image.PrintImg()); 
             Console.ReadKey();
         }
     }
